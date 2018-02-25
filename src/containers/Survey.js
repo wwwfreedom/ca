@@ -3,31 +3,42 @@ import axios from "axios"
 import Proptypes from "prop-types"
 
 class Survey extends Component {
-  static propTypes = {}
+  static propTypes = {
+    match: Proptypes.object.isRequired,
+    baseResourceUrl: Proptypes.string.isRequired,
+  }
+
   state = {
-    survey: [],
+    survey: {},
     loading: false,
     error: false,
   }
 
   componentDidMount() {
-    const { match } = this.props
-    const resourceUrl = "https://kevin-culture-amp-mock-api.herokuapp.com/"
+    const { match, baseResourceUrl } = this.props
     this.setState({ loading: true })
     axios
-      .get(resourceUrl)
+      .get(`${baseResourceUrl}${match.url}`)
       .then(({ data }) => {
-        if (data && data.survey_results) {
-          this.setState({ loading: false, survey: data.survey_results })
+        if (data && Object.keys(data.survey_result_detail).length !== 0) {
+          this.setState({ loading: false, survey: data.survey_result_detail, error: false })
         }
       })
       .catch(err => {
-        this.setState({ error: true })
+        console.log(err)
+        console.log("in error")
+        this.setState({ error: true, loading: false })
       })
   }
 
   render() {
-    return <div className="SurveyCon">individual survey</div>
+    const { survey, loading, error } = this.state
+    return (
+      <div className="SurveyCon">
+        {loading && "loading now"}
+        {error && "could not get data from server please refresh moment later"}
+      </div>
+    )
   }
 }
 
