@@ -4,8 +4,11 @@ import axios from 'axios'
 import Proptypes from 'prop-types'
 import Spinner from '../components/Spinner'
 import Card from '../components/Card'
+import SurveyList from '../components/SurveyList'
+import SurveyBody from '../components/SurveyBody'
+import SurveyHeader from '../components/SurveyHeader'
 
-class SurveysList extends Component {
+class SurveysListContainer extends Component {
     static propTypes = {
         baseResourceUrl: Proptypes.string.isRequired,
     }
@@ -34,25 +37,29 @@ class SurveysList extends Component {
     render() {
         const { surveys, loading, error } = this.state
         return (
-            <div className="SurveysListCon">
-                <h1>Surveys</h1>
-                {surveys.map(({ name, url, participant_count: participantCount }) => {
-                    // regex to strip url string of filetypes
-                    const stripedUrl = url.replace(/\.[^/.]+$/, '')
-                    return (
-                        <Card key={name} level={1}>
-                            <h3>{name}</h3>
-                            <p>{participantCount}</p>
-                            <br />
-                            <Link to={stripedUrl}>view survey</Link>
-                        </Card>
-                    )
-                })}
+            <SurveyList>
+                <SurveyHeader>
+                    <h1>Surveys</h1>
+                </SurveyHeader>
+                <SurveyBody>
+                    {surveys.map(({ name, url, participant_count: participantCount }) => {
+                        // regex to strip url string of filetypes
+                        const stripedUrl = url.replace(/\.[^/.]+$/, '')
+                        return (
+                            <Card key={name} level={1}>
+                                <h3>{name}</h3>
+                                <p>{participantCount}</p>
+                                <br />
+                                <Link to={stripedUrl}>view survey</Link>
+                            </Card>
+                        )
+                    })}
+                </SurveyBody>
                 {loading && <Spinner />}
                 {error && 'could not get data from server please refresh moment later'}
-            </div>
+            </SurveyList>
         )
     }
 }
 
-export default SurveysList
+export default SurveysListContainer
