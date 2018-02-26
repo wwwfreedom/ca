@@ -43,7 +43,6 @@ class SurveysList extends Component {
                         </div>
                     )
                 })}
-                git check
                 {loading && 'loading now'}
                 {error && 'could not get data from server please refresh moment later'}
             </div>
