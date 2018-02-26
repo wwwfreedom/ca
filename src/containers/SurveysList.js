@@ -1,8 +1,8 @@
 import React, { Component } from "react"
+import { Link } from "react-router-dom"
 import axios from "axios"
 import Proptypes from "prop-types"
 import Spinner from "../components/Spinner"
-import { Link } from "react-router-dom"
 
 class SurveysList extends Component {
   static propTypes = {
@@ -34,14 +34,16 @@ class SurveysList extends Component {
     const { surveys, loading, error } = this.state
     return (
       <div className="SurveysListCon">
-        {surveys.map(survey => {
-          // regex to strip string of filetypes
-          console.log(survey)
-          const url = survey.url.replace(/\.[^/.]+$/, "")
+        <h1>Surveys</h1>
+        {surveys.map(({ name, url, participant_count: participantCount }) => {
+          // regex to strip url string of filetypes
+          const stripedUrl = url.replace(/\.[^/.]+$/, "")
           return (
-            <div key={survey.name}>
-              <Link to={url}>{survey.name}</Link>
+            <div key={name}>
+              <h3>{name}</h3>
+              <p>{participantCount}</p>
               <br />
+              <Link to={stripedUrl}>view survey</Link>
             </div>
           )
         })}

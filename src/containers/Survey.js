@@ -20,14 +20,20 @@ function averageRating(responseArr, participantCount) {
 
 // simplify data from backend into essential info needed for the ui
 function transformData(obj) {
-  const { name, participant_count, response_rate, submitted_response_count, themes } = obj
+  const {
+    name: surveyName,
+    participant_count: participantCount,
+    response_rate: responseRate,
+    /* submitted_response_count,*/
+    themes,
+  } = obj
   const formattedThemes = themes.map(({ name, questions }) => {
-    const formatedQuestions = questions.map(({ description, survey_responses }) => {
-      return {
+    const formatedQuestions = questions.map(
+      ({ description, survey_responses: surveyResponses }) => ({
         question: description,
-        averageRating: averageRating(survey_responses, participant_count),
-      }
-    })
+        averageRating: averageRating(surveyResponses, participantCount),
+      })
+    )
     return {
       questionTheme: name,
       formatedQuestions,
@@ -35,8 +41,8 @@ function transformData(obj) {
   })
 
   return {
-    surveyName: name,
-    participationRate: precisionRound(response_rate * 100, 2),
+    surveyName,
+    participationRate: precisionRound(responseRate * 100, 2),
     formattedThemes,
   }
 }
