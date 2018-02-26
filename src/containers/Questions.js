@@ -8,8 +8,8 @@ class Questions extends Component {
     const { questions } = this.props
     return (
       <div>
-        {questions.map(({ description, survey_responses }) => (
-          <Question description={description} surveyResponse={survey_responses} />
+        {questions.map(({ question, averageRating }) => (
+          <Question key={question} question={question} averageRating={averageRating} />
         ))}
       </div>
     )
