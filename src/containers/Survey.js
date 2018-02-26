@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import axios from "axios"
 import Proptypes from "prop-types"
+import Spinner from "../components/Spinner"
 import Questions from "./Questions"
 
 // rounding function given a number will round the number witht the given precision
@@ -12,7 +13,7 @@ function precisionRound(number, precision) {
 // given an array of object with property response_content(rating) and participantCount => averageRating for the question
 function averageRating(responseArr, participantCount) {
   const ratingTotal = responseArr.reduce((accu, currentVal) => {
-    const rating = currentVal.response_content && parseInt(currentVal.response_content, 10)
+    const rating = currentVal.response_content !== "" && parseInt(currentVal.response_content, 10)
     return accu + rating
   }, 0)
   return precisionRound(ratingTotal / participantCount, 2)
@@ -100,7 +101,7 @@ class Survey extends Component {
               questionTheme={questionTheme}
             />
           ))}
-        {loading && "yolo loading now"}
+        {loading && <Spinner />}
         {error && "could not get data from server please refresh moment later"}
       </div>
     )
