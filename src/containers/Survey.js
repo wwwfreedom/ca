@@ -3,28 +3,29 @@ import axios from "axios"
 import Proptypes from "prop-types"
 import Questions from "./Questions"
 
+// rounding function given a number will round the number witht the given precision
 function precisionRound(number, precision) {
   const factor = 10 ** precision
   return Math.round(number * factor) / factor
 }
 
-function averageRating(responseArr) {
-  const numberOfParticipant = responseArr && responseArr.length
+// given an array of object with property response_content(rating) and participantCount => averageRating for the question
+function averageRating(responseArr, participantCount) {
   const ratingTotal = responseArr.reduce((accu, currentVal) => {
     const rating = currentVal.response_content && parseInt(currentVal.response_content, 10)
     return accu + rating
   }, 0)
-  return precisionRound(ratingTotal / numberOfParticipant, 2)
+  return precisionRound(ratingTotal / participantCount, 2)
 }
 
-function formatData(obj) {
-  console.log(obj)
+// simplify data from backend into essential info needed for the ui
+function transformData(obj) {
   const { name, participant_count, response_rate, submitted_response_count, themes } = obj
   const formattedThemes = themes.map(({ name, questions }) => {
     const formatedQuestions = questions.map(({ description, survey_responses }) => {
       return {
         question: description,
-        averageRating: averageRating(survey_responses),
+        averageRating: averageRating(survey_responses, participant_count),
       }
     })
     return {
@@ -49,7 +50,7 @@ class Survey extends Component {
   state = {
     surveyName: null,
     participationRate: null,
-    formatedTheme: null,
+    formattedThemes: null,
     loading: false,
     error: false,
   }
@@ -61,17 +62,16 @@ class Survey extends Component {
       .get(`${baseResourceUrl}${match.url}`)
       .then(({ data }) => {
         if (data && Object.keys(data.survey_result_detail).length !== 0) {
-          const formatedData = formatData(data.survey_result_detail)
+          const transformedData = transformData(data.survey_result_detail)
           this.setState({
             loading: false,
             error: false,
-            ...formatedData,
+            ...transformedData,
           })
         }
       })
       .catch(err => {
         console.log(err)
-        console.log("in error")
         this.setState({ error: true, loading: false })
       })
   }
@@ -88,10 +88,11 @@ class Survey extends Component {
         </div>
         {formattedThemes &&
           formattedThemes.map(({ questionTheme, formatedQuestions }) => (
-            <div key={questionTheme}>
-              <h2>{questionTheme}</h2>
-              <Questions questions={formatedQuestions} />
-            </div>
+            <Questions
+              key={questionTheme}
+              questions={formatedQuestions}
+              questionTheme={questionTheme}
+            />
           ))}
         {loading && "yolo loading now"}
         {error && "could not get data from server please refresh moment later"}

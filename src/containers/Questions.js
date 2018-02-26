@@ -5,9 +5,10 @@ import Question from "../components/Question"
 class Questions extends Component {
   static propTypes = {}
   render() {
-    const { questions } = this.props
+    const { questions, questionTheme } = this.props
     return (
       <div>
+        <h3>{questionTheme}</h3>
         {questions.map(({ question, averageRating }) => (
           <Question key={question} question={question} averageRating={averageRating} />
         ))}
