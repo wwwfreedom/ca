@@ -7,5 +7,6 @@ export default () => injectGlobal`
   body {
     padding: 0;
     font-family: sans-serif;
+    font-size: 16px;
   }
 `

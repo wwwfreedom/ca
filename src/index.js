@@ -1,15 +1,15 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-
 // Add this import:
 import { AppContainer } from 'react-hot-loader'
-import App from './containers/App'
+
+import App from './containers/App.js'
 import registerServiceWorker from './registerServiceWorker'
-import baseStyles from './styles/index'
+import baseStyle from './styles/index'
 
 // Wrap the rendering in a function:
 const render = Component => {
-    baseStyles()
+    baseStyle()
 
     ReactDOM.render(
         // Wrap App inside AppContainer
